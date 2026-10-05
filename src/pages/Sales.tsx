@@ -74,12 +74,25 @@ function Sales() {
             setSales(response.data);
             setLastPage(response.last_page);
 
-        } catch (error) {
-            setError(
-                error instanceof Error
-                    ? error.message
-                    : 'Não foi possível carregar as vendas.'
-            );
+        } catch (error: any) {
+            console.error(error);
+
+            if (error?.message) {
+                setError(error.message);
+            } else {
+                const firstError = Object.values(
+                    error || {}
+                )[0];
+
+                if (Array.isArray(firstError)) {
+                    setError(firstError[0]);
+                } else {
+                    setError(
+                        'Não foi possível carregar as vendas.'
+                    );
+                }
+            }
+
         } finally {
             setLoading(false);
         }
@@ -239,8 +252,12 @@ function Sales() {
 
                     <div className="pagination">
                         <button
-                            onClick={() => handlePageChange(page - 1)}
-                            disabled={page === 1 || loading}
+                            onClick={() =>
+                                handlePageChange(page - 1)
+                            }
+                            disabled={
+                                page === 1 || loading
+                            }
                         >
                             Anterior
                         </button>
@@ -250,8 +267,12 @@ function Sales() {
                         </span>
 
                         <button
-                            onClick={() => handlePageChange(page + 1)}
-                            disabled={page === lastPage || loading}
+                            onClick={() =>
+                                handlePageChange(page + 1)
+                            }
+                            disabled={
+                                page === lastPage || loading
+                            }
                         >
                             Próxima
                         </button>

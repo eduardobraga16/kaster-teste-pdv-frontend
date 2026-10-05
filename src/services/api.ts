@@ -6,18 +6,34 @@ async function request(
 ) {
     const token = localStorage.getItem('token');
 
-    const response = await fetch(`${API_URL}${endpoint}`, {
-        ...options,
-        headers: {
-            'Accept': 'application/json',
-            ...options.headers,
-            ...(token && {
-                'Authorization': `Bearer ${token}`
-            })
-        }
-    });
+    let response;
 
-    const data = await response.json();
+    try {
+        response = await fetch(`${API_URL}${endpoint}`, {
+            ...options,
+            headers: {
+                'Accept': 'application/json',
+                ...options.headers,
+                ...(token && {
+                    'Authorization': `Bearer ${token}`
+                })
+            }
+        });
+    } catch (error) {
+        throw {
+            message: 'Não foi possível conectar com o servidor.'
+        };
+    }
+
+    let data;
+
+    try {
+        data = await response.json();
+    } catch (error) {
+        throw {
+            message: 'O servidor retornou uma resposta inválida.'
+        };
+    }
 
     if (!response.ok) {
         throw data;

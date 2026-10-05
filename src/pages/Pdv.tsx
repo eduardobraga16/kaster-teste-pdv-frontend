@@ -28,11 +28,11 @@ function Pdv() {
     const searchInputRef = useRef<HTMLInputElement>(null);
 
     const [alertMessage, setAlertMessage] = useState('');
-    
+
     const [search, setSearch] = useState('');
     const [products, setProducts] = useState<Product[]>([]);
     const [cart, setCart] = useState<CartItem[]>(() => {
-    const savedCart = localStorage.getItem('pdv_cart');
+        const savedCart = localStorage.getItem('pdv_cart');
 
         if (!savedCart) {
             return [];
@@ -44,7 +44,6 @@ function Pdv() {
             return [];
         }
     });
-    
 
     const [paymentMethod, setPaymentMethod] = useState(1);
     const [amountReceived, setAmountReceived] = useState('');
@@ -52,14 +51,23 @@ function Pdv() {
     const [loadingProducts, setLoadingProducts] = useState(false);
     const [error, setError] = useState('');
 
-    useEffect(() => {
-        console.log('SALVANDO CARRINHO:', cart);
 
+    const showAlert = (message: string) => {
+        setAlertMessage(message);
+
+        setTimeout(() => {
+            setAlertMessage('');
+        }, 3000);
+    };
+
+
+    useEffect(() => {
         localStorage.setItem(
             'pdv_cart',
             JSON.stringify(cart)
         );
     }, [cart]);
+
 
     const formatMoney = (value: number | string) => {
         return Number(value).toLocaleString('pt-BR', {
@@ -68,9 +76,11 @@ function Pdv() {
         });
     };
 
+
     const getProductPrice = (product: Product) => {
         return Number(product.price);
     };
+
 
     const subtotal = cart.reduce((total, item) => {
         return total + (
@@ -78,18 +88,22 @@ function Pdv() {
         );
     }, 0);
 
+
     const received = Number(
         amountReceived.replace(',', '.')
     ) || 0;
+
 
     const change = Math.max(
         received - subtotal,
         0
     );
 
+
     useEffect(() => {
         searchInputRef.current?.focus();
     }, []);
+
 
     useEffect(() => {
         if (search.length < 2) {
@@ -110,10 +124,14 @@ function Pdv() {
                         : response.data || []
                 );
 
-            } catch (error) {
-                setError(
+            } catch (error: any) {
+                setProducts([]);
+
+                showAlert(
+                    error?.message ||
                     'Não foi possível buscar os produtos.'
                 );
+
             } finally {
                 setLoadingProducts(false);
             }
@@ -121,7 +139,6 @@ function Pdv() {
 
         return () => clearTimeout(timer);
     }, [search]);
-
 
 
     const handleSearchKeyDown = async (
@@ -148,10 +165,7 @@ function Pdv() {
                 : response.data || [];
 
             if (result.length === 0) {
-                setAlertMessage('Produto não encontrado.');
-                setTimeout(() => {
-                    setAlertMessage('');
-                }, 3000);
+                showAlert('Produto não encontrado.');
                 return;
             }
 
@@ -160,60 +174,52 @@ function Pdv() {
             );
 
             if (!product) {
-                setAlertMessage('Produto não encontrado.');
-                setTimeout(() => {
-                    setAlertMessage('');
-                }, 3000);
+                showAlert('Produto não encontrado.');
                 return;
             }
 
             addProduct(product);
 
-        } catch (error) {
-            setAlertMessage(
+        } catch (error: any) {
+            showAlert(
+                error?.message ||
                 'Não foi possível buscar o produto.'
             );
-            setTimeout(() => {
-                setAlertMessage('');
-            }, 3000);
+
         } finally {
             setLoadingProducts(false);
         }
     };
 
+
     const addProduct = (product: Product) => {
+
         if (
             product.stock !== undefined &&
             product.stock <= 0
         ) {
-            setAlertMessage(
+            showAlert(
                 'Produto sem estoque disponível.'
             );
-
-            setTimeout(() => {
-                setAlertMessage('');
-            }, 3000);
 
             return;
         }
 
         setCart(currentCart => {
+
             const existing = currentCart.find(
                 item => item.id === product.id
             );
 
             if (existing) {
+
                 if (
                     existing.stock !== undefined &&
                     existing.qtd >= existing.stock
                 ) {
-                    setAlertMessage(
+                    showAlert(
                         'Quantidade maior que o estoque disponível.'
                     );
-
-                    setTimeout(() => {
-                        setAlertMessage('');
-                    }, 3000);
 
                     return currentCart;
                 }
@@ -245,16 +251,19 @@ function Pdv() {
         }, 0);
     };
 
+
     const updateQuantity = (
         productId: number,
         qtd: number
     ) => {
+
         if (qtd < 1) {
             return;
         }
 
         setCart(currentCart =>
             currentCart.map(item => {
+
                 if (item.id !== productId) {
                     return item;
                 }
@@ -263,13 +272,9 @@ function Pdv() {
                     item.stock !== undefined &&
                     qtd > item.stock
                 ) {
-                    setAlertMessage(
+                    showAlert(
                         'Quantidade maior que o estoque disponível.'
                     );
-
-                    setTimeout(() => {
-                        setAlertMessage('');
-                    }, 3000);
 
                     return item;
                 }
@@ -282,6 +287,7 @@ function Pdv() {
         );
     };
 
+
     const removeProduct = (productId: number) => {
         setCart(currentCart =>
             currentCart.filter(
@@ -289,7 +295,7 @@ function Pdv() {
             )
         );
     };
-    
+
 
     const handleSearchChange = (
         event: ChangeEvent<HTMLInputElement>
@@ -297,37 +303,34 @@ function Pdv() {
         setSearch(event.target.value);
     };
 
+
     const handleAmountReceived = (
         event: ChangeEvent<HTMLInputElement>
     ) => {
         setAmountReceived(event.target.value);
     };
 
-    
-    const handleFinishSale = async () => {
-        if (cart.length === 0) {
-            setAlertMessage('Adicione pelo menos um produto.');
 
-            setTimeout(() => {
-                setAlertMessage('');
-            }, 3000);
+    const handleFinishSale = async () => {
+
+        if (cart.length === 0) {
+            showAlert(
+                'Adicione pelo menos um produto.'
+            );
 
             return;
         }
 
         if (!paymentMethod) {
-            setAlertMessage(
+            showAlert(
                 'Selecione a forma de pagamento.'
             );
-
-            setTimeout(() => {
-                setAlertMessage('');
-            }, 3000);
 
             return;
         }
 
         try {
+
             const data = {
                 items: cart.map(item => ({
                     product_id: item.id,
@@ -339,13 +342,14 @@ function Pdv() {
 
             const response = await createSale(data);
 
-            console.log('Venda criada:', response);
+            console.log(
+                'Venda criada:',
+                response
+            );
 
-            setAlertMessage('Venda realizada com sucesso.');
-
-            setTimeout(() => {
-                setAlertMessage('');
-            }, 3000);
+            showAlert(
+                'Venda realizada com sucesso.'
+            );
 
             setCart([]);
             setSearch('');
@@ -358,53 +362,43 @@ function Pdv() {
             }, 0);
 
         } catch (error: any) {
+
             console.error(error);
 
             if (error?.message) {
-                setAlertMessage(error.message);
-
-                setTimeout(() => {
-                    setAlertMessage('');
-                }, 3000);
-
+                showAlert(error.message);
                 return;
             }
 
-            const firstError = Object.values(error)[0];
+            const firstError = Object.values(
+                error || {}
+            )[0];
 
             if (Array.isArray(firstError)) {
-                setAlertMessage(firstError[0]);
-
-                setTimeout(() => {
-                    setAlertMessage('');
-                }, 3000);
-
+                showAlert(firstError[0]);
                 return;
             }
 
-            setAlertMessage(
+            showAlert(
                 'Não foi possível finalizar a venda.'
             );
-
-            setTimeout(() => {
-                setAlertMessage('');
-            }, 3000);
         }
     };
 
 
-
     return (
 
-        
         <div className="pdv">
 
             {alertMessage && (
                 <div className="pdv-alert">
+
                     <div>
                         <strong>Atenção</strong>
 
-                        <p>{alertMessage}</p>
+                        <p>
+                            {alertMessage}
+                        </p>
                     </div>
 
                     <button
@@ -413,11 +407,16 @@ function Pdv() {
                     >
                         ×
                     </button>
+
                 </div>
             )}
 
+
             <div className="pdv-header">
-                <h2>Nova venda</h2>
+
+                <h2>
+                    Nova venda
+                </h2>
 
                 <div>
                     <strong>
@@ -428,13 +427,16 @@ function Pdv() {
                         {formatMoney(subtotal)}
                     </span>
                 </div>
+
             </div>
+
 
             <div className="pdv-content">
 
                 <div className="pdv-products">
 
                     <div className="pdv-search">
+
                         <input
                             ref={searchInputRef}
                             type="text"
@@ -450,10 +452,13 @@ function Pdv() {
                             </span>
                         )}
 
+
                         {products.length > 0 && (
+
                             <div className="pdv-product-results">
 
                                 {products.map(product => (
+
                                     <button
                                         type="button"
                                         key={product.id}
@@ -461,7 +466,9 @@ function Pdv() {
                                             addProduct(product)
                                         }
                                     >
+
                                         <div>
+
                                             <strong>
                                                 {product.name}
                                             </strong>
@@ -470,6 +477,7 @@ function Pdv() {
                                                 Estoque:{' '}
                                                 {product.stock ?? 0}
                                             </small>
+
                                         </div>
 
                                         <strong>
@@ -477,26 +485,39 @@ function Pdv() {
                                                 product.price
                                             )}
                                         </strong>
+
                                     </button>
+
                                 ))}
 
                             </div>
+
                         )}
+
                     </div>
+
 
                     <div className="pdv-cart">
 
                         {cart.length === 0 && (
+
                             <div className="pdv-empty">
+
                                 <p>
                                     Nenhum produto adicionado.
                                 </p>
+
                             </div>
+
                         )}
 
+
                         {cart.length > 0 && (
+
                             <table>
+
                                 <thead>
+
                                     <tr>
                                         <th>Produto</th>
                                         <th>Qtd.</th>
@@ -504,10 +525,14 @@ function Pdv() {
                                         <th>Subtotal</th>
                                         <th></th>
                                     </tr>
+
                                 </thead>
 
+
                                 <tbody>
+
                                     {cart.map(item => (
+
                                         <tr key={item.id}>
 
                                             <td>
@@ -516,8 +541,11 @@ function Pdv() {
                                                 </strong>
                                             </td>
 
+
                                             <td>
+
                                                 <div className="pdv-quantity">
+
                                                     <button
                                                         type="button"
                                                         onClick={() =>
@@ -533,9 +561,11 @@ function Pdv() {
                                                         -
                                                     </button>
 
+
                                                     <span>
                                                         {item.qtd}
                                                     </span>
+
 
                                                     <button
                                                         type="button"
@@ -545,11 +575,18 @@ function Pdv() {
                                                                 item.qtd + 1
                                                             )
                                                         }
+                                                        disabled={
+                                                            item.stock !== undefined &&
+                                                            item.qtd >= item.stock
+                                                        }
                                                     >
                                                         +
                                                     </button>
+
                                                 </div>
+
                                             </td>
+
 
                                             <td>
                                                 {formatMoney(
@@ -557,16 +594,21 @@ function Pdv() {
                                                 )}
                                             </td>
 
+
                                             <td>
+
                                                 <strong>
                                                     {formatMoney(
                                                         getProductPrice(item) *
                                                         item.qtd
                                                     )}
                                                 </strong>
+
                                             </td>
 
+
                                             <td>
+
                                                 <button
                                                     type="button"
                                                     className="btn btn-danger"
@@ -578,29 +620,43 @@ function Pdv() {
                                                 >
                                                     Remover
                                                 </button>
+
                                             </td>
 
                                         </tr>
+
                                     ))}
+
                                 </tbody>
+
                             </table>
+
                         )}
 
                     </div>
 
                 </div>
 
+
                 <aside className="pdv-checkout">
 
-                    <h3>Pagamento</h3>
+                    <h3>
+                        Pagamento
+                    </h3>
+
 
                     <div className="pdv-checkout-total">
-                        <span>Total a pagar</span>
+
+                        <span>
+                            Total a pagar
+                        </span>
 
                         <strong>
                             {formatMoney(subtotal)}
                         </strong>
+
                     </div>
+
 
                     <div className="pdv-field">
 
@@ -616,6 +672,7 @@ function Pdv() {
                                 )
                             }
                         >
+
                             <option value="1">
                                 À vista
                             </option>
@@ -631,9 +688,11 @@ function Pdv() {
                             <option value="4">
                                 Pix
                             </option>
+
                         </select>
 
                     </div>
+
 
                     <div className="pdv-field">
 
@@ -650,6 +709,7 @@ function Pdv() {
 
                     </div>
 
+
                     <div className="pdv-change">
 
                         <span>
@@ -662,11 +722,13 @@ function Pdv() {
 
                     </div>
 
+
                     {error && (
                         <div className="pdv-error">
                             {error}
                         </div>
                     )}
+
 
                     <button
                         type="button"
