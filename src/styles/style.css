@@ -1,0 +1,693 @@
+* {
+    box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    min-height: 100%;
+}
+
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    background: #f5f6f8;
+    color: #222;
+}
+
+button,
+input,
+select,
+textarea {
+    font: inherit;
+}
+
+button {
+    cursor: pointer;
+}
+
+a {
+    color: inherit;
+    text-decoration: none;
+}
+
+/* Layout */
+
+.app {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Header */
+
+.header {
+    width: 100%;
+    height: 60px;
+    background: #2088bb;
+    border-bottom: 1px solid #e5e5e5;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    padding: 0 24px;
+}
+.header  h1{
+    color: #fff;
+    font-size: 22px;
+}
+
+.btn{
+    margin-left: 3px;
+    margin-right: 3px;
+}
+.btn-primary{
+    background: #279b0b;
+}
+.btn-primary{
+    background: #279b0b;
+}
+.btn-secondary{
+    background: #b3620c;
+}
+.btn-danger{
+    background: #a90f0f;
+}
+.btn-info{
+    background: #cecb0a;
+    color: #000;
+}
+
+
+/*PDV*/
+
+.pdv {
+    width: 100%;
+}
+
+.pdv-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.pdv-header h2 {
+    margin: 0;
+}
+
+.pdv-header > div {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.pdv-total {
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.pdv-content {
+    display: grid;
+    grid-template-columns: 1fr 350px;
+    gap: 20px;
+}
+
+.pdv-products {
+    min-width: 0;
+}
+
+.pdv-search {
+    position: relative;
+    margin-bottom: 15px;
+}
+
+.pdv-search input {
+    width: 100%;
+    height: 50px;
+    padding: 0 15px;
+    font-size: 17px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    box-sizing: border-box;
+}
+
+.pdv-search > span {
+    position: absolute;
+    right: 15px;
+    top: 16px;
+    font-size: 13px;
+    color: #777;
+}
+
+.pdv-product-results {
+    position: absolute;
+    z-index: 10;
+    width: 100%;
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 0 0 6px 6px;
+    max-height: 350px;
+    overflow-y: auto;
+}
+
+.pdv-product-results button {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 14px;
+    background: #fff;
+    border: 0;
+    border-bottom: 1px solid #eee;
+    cursor: pointer;
+    text-align: left;
+    color: #000;
+}
+
+.pdv-product-results button:hover {
+    background: #f5f5f5;
+}
+
+.pdv-product-results button div {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.pdv-product-results small {
+    color: #777;
+}
+
+.pdv-cart {
+    background: #fff;
+    border: 1px solid #ddd;
+    min-height: 400px;
+}
+
+.pdv-cart table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.pdv-cart th {
+    background: #f5f5f5;
+    padding: 12px;
+    text-align: left;
+}
+
+.pdv-cart td {
+    padding: 12px;
+    border-bottom: 1px solid #eee;
+}
+
+.pdv-empty {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 400px;
+    color: #777;
+}
+
+.pdv-quantity {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.pdv-quantity button {
+    width: 30px;
+    height: 30px;
+    border: 1px solid #ddd;
+    background: #fff;
+    border-radius: 4px;
+    cursor: pointer;
+    color: #000;
+}
+
+.pdv-quantity button:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+.pdv-checkout {
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    padding: 20px;
+    height: fit-content;
+}
+
+.pdv-checkout h3 {
+    margin-top: 0;
+}
+
+.pdv-checkout-total {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 0;
+    margin-bottom: 20px;
+    border-bottom: 1px solid #eee;
+}
+
+.pdv-checkout-total strong {
+    font-size: 22px;
+}
+
+.pdv-field {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+    margin-bottom: 15px;
+}
+
+.pdv-field label {
+    font-weight: bold;
+}
+
+.pdv-field input,
+.pdv-field select {
+    width: 100%;
+    height: 42px;
+    padding: 0 10px;
+    box-sizing: border-box;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.pdv-change {
+    display: flex;
+    justify-content: space-between;
+    padding: 15px 0;
+    margin-bottom: 15px;
+    border-top: 1px solid #eee;
+    border-bottom: 1px solid #eee;
+}
+
+.pdv-change strong {
+    font-size: 20px;
+}
+
+.pdv-finish {
+    width: 100%;
+    height: 50px;
+    font-size: 17px;
+}
+
+.pdv-error {
+    padding: 10px;
+    margin-bottom: 15px;
+    background: #ffe5e5;
+    color: #b00000;
+    border-radius: 5px;
+}
+
+@media (max-width: 900px) {
+    .pdv-content {
+        grid-template-columns: 1fr;
+    }
+}
+/*PDV FIM*/
+
+/*alerts*/
+.pdv-alert {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    width: 320px;
+    background: #fff;
+    border-left: 4px solid #cfcfcf;
+    border-radius: 6px;
+    padding: 15px 15px 15px 18px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 15px;
+    z-index: 9999;
+}
+
+.pdv-alert strong {
+    display: block;
+    margin-bottom: 5px;
+}
+
+.pdv-alert p {
+    margin: 0;
+    color: #555;
+}
+
+.pdv-alert button {
+    border: none;
+    background: transparent;
+    font-size: 22px;
+    line-height: 1;
+    cursor: pointer;
+    color: #777;
+    padding: 0;
+}
+
+.pdv-alert button:hover {
+    color: #000;
+}
+/*Alerts fim*/
+
+
+/* Conteúdo */
+
+.main-content {
+    margin: 40px 0px;
+}
+
+/* Footer */
+
+.footer {
+    padding: 16px 24px;
+    background: #ffffff;
+    border-top: 1px solid #e5e5e5;
+    text-align: center;
+    color: #777;
+}
+
+/* Títulos */
+
+.page-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    margin-bottom: 24px;
+}
+
+.page-header h1,
+.page-header h2 {
+    margin: 0;
+}
+
+/* Ações */
+
+.page-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* Inputs */
+
+input,
+select,
+textarea {
+    border: 1px solid #d5d5d5;
+    border-radius: 6px;
+
+    padding: 9px 12px;
+
+    background: #ffffff;
+    color: #222;
+
+    outline: none;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+    border-color: #999;
+}
+
+.box-login{
+    text-align: center;
+}
+
+/* Botões */
+
+button {
+    border: 0;
+    border-radius: 6px;
+
+    padding: 7px 11px;
+    font-size: 14px;
+    background: #222;
+    color: #ffffff;
+}
+
+button:hover {
+    opacity: 0.9;
+}
+
+button:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+}
+
+/* Tabelas */
+
+.table-container {
+    width: 100%;
+
+    background: #ffffff;
+
+    border: 1px solid #e5e5e5;
+    border-radius: 8px;
+
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+thead {
+    background: #f5f5f5;
+}
+
+th,
+td {
+    padding: 12px 16px;
+    text-align: left;
+
+    border-bottom: 1px solid #eeeeee;
+}
+
+th {
+    font-weight: 600;
+    color: #555;
+}
+
+tbody tr:last-child td {
+    border-bottom: 0;
+}
+
+/* Paginação */
+
+.pagination {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 12px;
+
+    margin-top: 20px;
+}
+
+.pagination-info {
+    color: #555;
+}
+
+/* Mensagens */
+
+.loading {
+    padding: 30px;
+    text-align: center;
+}
+
+.error {
+    padding: 14px;
+
+    background: #fff0f0;
+    border: 1px solid #ffd0d0;
+    border-radius: 6px;
+
+    color: #b00000;
+}
+
+.empty {
+    padding: 40px;
+
+    text-align: center;
+
+    color: #777;
+}
+
+
+
+
+.coupon {
+    width: 100%;
+    max-width: none;
+    margin: 0;
+    padding: 20px;
+    box-sizing: border-box;
+    font-size: 13px;
+}
+
+.coupon-info {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.coupon-info div {
+    display: flex;
+    justify-content: space-between;
+    gap: 15px;
+}
+
+.coupon-divider {
+    width: 100%;
+    border-top: 1px dashed #999;
+    margin: 10px 0;
+}
+
+.coupon-item {
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+.coupon-item-name {
+    font-weight: bold;
+    word-break: break-word;
+}
+
+.coupon-item-values {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    width: 100%;
+    padding-left: 16px;
+}
+
+.coupon-total {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.coupon-payment {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.coupon-payment div {
+    display: flex;
+    justify-content: space-between;
+    gap: 15px;
+}
+
+.coupon-actions {
+    display: flex;
+    justify-content: center;
+    margin: 20px auto;
+}
+@media print {
+
+    @page {
+        size: 80mm auto;
+        margin: 0;
+    }
+
+    html,
+    body {
+        width: 80mm;
+        margin: 0;
+        padding: 0;
+        background: #fff;
+    }
+
+    #root {
+        width: 80mm;
+        margin: 0;
+        padding: 0;
+    }
+
+    .coupon {
+        width: 80mm;
+        max-width: 80mm;
+        padding: 5mm;
+        margin: 0;
+        box-sizing: border-box;
+        font-size: 11px;
+    }
+
+    .coupon-total {
+        font-size: 14px;
+    }
+
+    .coupon-actions {
+        display: none;
+    }
+}
+
+.container {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 24px;
+}
+
+/* Responsivo */
+
+@media (max-width: 768px) {
+    .sidebar {
+        width: 180px;
+    }
+
+    .main-content,
+    .footer {
+        margin-left: 180px;
+    }
+
+    .page-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+    }
+
+    .page-actions {
+        width: 100%;
+        flex-wrap: wrap;
+    }
+}
+
+@media (max-width: 600px) {
+    .sidebar {
+        position: static;
+
+        width: 100%;
+        height: auto;
+
+        border-right: 0;
+        border-bottom: 1px solid #e5e5e5;
+    }
+
+    .main-content,
+    .footer {
+        margin-left: 0;
+    }
+
+    .main-content {
+        padding: 16px;
+    }
+
+    .header {
+        padding: 0 16px;
+    }
+}
